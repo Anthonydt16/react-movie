@@ -2,6 +2,16 @@ import React from 'react';
 
 const Card = ({ movie }) => {
 
+    const addStorage = () => {
+        let storeData = window.localStorage.movies
+            ? window.localStorage.movies.split(",")
+            : [];
+        if(!storeData.includes((movie.id.toString()))){
+            storeData.push(movie.id);
+            window.localStorage.movies = storeData;
+        }
+    }
+
     const genreFinder = () => {
         let genreArray = [];
         for (let i = 0; i < movie.genre_ids.length; i++) {
@@ -67,6 +77,7 @@ const Card = ({ movie }) => {
                     break;
             }
         }
+
         return genreArray.map((genre) => <li key={genre}>{genre}</li>);
     };
     const dateFormater = (date) =>{
@@ -81,6 +92,16 @@ const Card = ({ movie }) => {
             <h2>{movie.title}</h2>
             {movie.release_date ? <h5>sorti le : {dateFormater(movie.release_date)} </h5> : ""}
             <h4>{movie.vote_average}/10<span>⭐</span></h4>
+            <ul>
+                {movie.genre_ids
+                    ?  genreFinder()
+                    : movie.genres.map((genre) =>(
+                    <li>{genre.name}</li>
+                ) )}
+            </ul>
+            {movie.overview ? <h3>Synopsis</h3> : ""}
+            <p>{movie.overview}</p>
+            <div className="btn" onClick={() => addStorage()}>Ajouter au coup de coeur</div>
            {/*https://api.themoviedb.org/3/genre/movie/list?api_key=e4e280d99cfacf94c16adeb58ca0d2cf&language=fr-FR*/}
         </div>
     );
