@@ -84,6 +84,13 @@ const Card = ({ movie }) => {
         let [yy, mm, dd] = date.split("-");
         return [yy, mm, dd].join("/");
     }
+    const deleteStorage = () =>{
+        let storedData = window.localStorage.movies.split(",");
+        let newData = storedData.filter((id) => id != movie.id);
+        window.localStorage.movies = newData;
+        window.location.reload();
+    }
+
     return (
         <div className="card">
             <img src={movie.poster_path ?
@@ -95,14 +102,22 @@ const Card = ({ movie }) => {
             <ul>
                 {movie.genre_ids
                     ?  genreFinder()
-                    : movie.genres.map((genre) =>(
-                    <li>{genre.name}</li>
+                    : movie.genres.map((genre, index) =>(
+                    <li key={index}>{genre.name}</li>
                 ) )}
             </ul>
             {movie.overview ? <h3>Synopsis</h3> : ""}
             <p>{movie.overview}</p>
-            <div className="btn" onClick={() => addStorage()}>Ajouter au coup de coeur</div>
-           {/*https://api.themoviedb.org/3/genre/movie/list?api_key=e4e280d99cfacf94c16adeb58ca0d2cf&language=fr-FR*/}
+            {movie.genre_ids ? (
+                <div className="btn" onClick={() => addStorage()}>
+                    Ajouter au coup de coeur
+                </div>
+            ) : (
+                <div className="btn" onClick={() => deleteStorage()}>
+                    supprimer de la liste
+                </div>
+            )}
+
         </div>
     );
 };
